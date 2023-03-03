@@ -27,10 +27,10 @@ public class AWSS3Service implements FileService{
 	
 	@Override
 	public String uploadFile(MultipartFile file) {
-		
+	
 		String filenameExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-		
-		String key = UUID.randomUUID().toString() + "." +filenameExtension;
+		System.out.println("StringUtils.getFilename(file.getOriginalFilename())"+StringUtils.getFilename(file.getOriginalFilename()));
+		String key = StringUtils.getFilename(file.getOriginalFilename()) ;
 		
 		ObjectMetadata metaData = new ObjectMetadata();
 		metaData.setContentLength(file.getSize());
@@ -63,7 +63,7 @@ public class AWSS3Service implements FileService{
 
 		long fileLength = obj.getObjectMetadata().getContentLength();
 		System.out.println("fileLeength is :"+fileLength);
-		File localFile = new File("localFile1.xlsx");
+		File localFile = new File("localFile2.xlsx");
 		try {
 			FileUtils.copyToFile(obj.getObjectContent(), localFile);
 		} catch (IOException e) {
