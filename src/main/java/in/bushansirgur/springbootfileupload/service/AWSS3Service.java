@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -63,7 +64,7 @@ public class AWSS3Service implements FileService{
 
 		long fileLength = obj.getObjectMetadata().getContentLength();
 		System.out.println("fileLeength is :"+fileLength);
-		File localFile = new File("localFile2.xlsx");
+		File localFile = new File("localFile3.xlsx");
 		try {
 			FileUtils.copyToFile(obj.getObjectContent(), localFile);
 		} catch (IOException e) {
@@ -71,8 +72,17 @@ public class AWSS3Service implements FileService{
 			e.printStackTrace();
 		}
 		}
+		catch(AmazonS3Exception ex) {
+			System.out.println("File does not exists");
+			callMe();
+		}
 		finally {
 			
 		}
+		System.out.println("File does not exists after  call me");
+	}
+	
+	public void callMe() {
+		System.out.println("File does not exists inside call me");
 	}
 }
