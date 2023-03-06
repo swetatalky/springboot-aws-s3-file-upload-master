@@ -1,5 +1,6 @@
 package in.bushansirgur.springbootfileupload.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,8 @@ public class UploadFileController {
 	
 	@PostMapping
 	public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
-		String publicURL = awsS3Service.uploadFile(file);
+		File f=new File("E:\\xlxsfolder\\six_file.xlsx");
+		String publicURL = awsS3Service.uploadFile(f);
 		Map<String, String> response = new HashMap<>();
 		response.put("publicURL", publicURL);
 		return new ResponseEntity<Map<String, String>>(response, HttpStatus.CREATED);

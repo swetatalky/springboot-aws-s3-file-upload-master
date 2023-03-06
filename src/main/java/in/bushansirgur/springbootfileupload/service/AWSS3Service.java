@@ -2,6 +2,7 @@ package in.bushansirgur.springbootfileupload.service;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -37,6 +38,7 @@ public class AWSS3Service implements FileService{
 		metaData.setContentLength(file.getSize());
 		long length=file.getSize();
 		System.out.println("length is :"+length);
+		System.out.println("file.getContentType():"+file.getContentType());
 		System.out.println("metaData length is :"+metaData.getContentLength());
 		metaData.setContentType(file.getContentType());
 		
@@ -47,6 +49,42 @@ public class AWSS3Service implements FileService{
 		}
 		
 		//awsS3Client.setObjectAcl("dependencycheck12", key, CannedAccessControlList.PublicRead);
+		System.out.println("key is :"+key);
+		return awsS3Client.getResourceUrl("dependencycheck12", key);
+	}
+	public  long getFileSizeKiloBytes(File file) {
+		double x= (double) file.length() / 1024 ;
+		return (long)x;
+	}
+	
+	private  long getFileSizeBytes(File file) {
+		return file.length() ;
+	}
+	@Override
+	public String uploadFile(File file) {
+	
+		//String filenameExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+		//System.out.println("StringUtils.getFilename(file.getOriginalFilename())"+StringUtils.getFilename(file.getOriginalFilename()));
+		System.out.println(file.getName());
+		String key = file.getName() ;
+		
+		
+		ObjectMetadata metaData = new ObjectMetadata();
+		metaData.setContentLength(getFileSizeBytes(file));
+		long length=getFileSizeKiloBytes(file);
+		System.out.println("length is :"+length);
+		System.out.println("metaData length is :"+metaData.getContentLength());
+		metaData.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		try {  
+		InputStream targetStream = new FileInputStream(file);
+		
+			awsS3Client.putObject("dependencycheck12", key, targetStream, metaData);
+		} catch (IOException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An exception occured while uploading the file");
+		}
+		//return "abc";
+		
+	//awsS3Client.setObjectAcl("dependencycheck12", key, CannedAccessControlList.PublicRead);
 		System.out.println("key is :"+key);
 		return awsS3Client.getResourceUrl("dependencycheck12", key);
 	}
@@ -64,10 +102,10 @@ public class AWSS3Service implements FileService{
 
 		long fileLength = obj.getObjectMetadata().getContentLength();
 		System.out.println("fileLeength is :"+fileLength);
-		File localFile = new File("localFile3.xlsx");
+		File localFile = new File("localFile6.xlsx");
 		try {
-			FileUtils.copyToFile(obj.getObjectContent(), localFile);
-		} catch (IOException e) {
+			//FileUtils.copyToFile(obj.getObjectContent(), localFile);
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
